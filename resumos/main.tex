@@ -1,0 +1,79 @@
+\documentclass{article}
+\usepackage{amsthm}
+
+
+\makeatletter
+\def\lecture{\@ifnextchar[{\@lectureWith}{\@lectureWithout}}
+\def\@lectureWith[#1]{\medbreak\refstepcounter{section}%
+  \renewcommand{\leftmark}{Lecture \thesection}
+  \noindent{\addcontentsline{toc}{section}{Lecture \thesection: #1\@addpunct{.}}%
+  \sectionfont Lecture \thesection. #1\@addpunct{.}}\medbreak}
+\def\@lectureWithout{\medbreak\refstepcounter{section}%
+  \renewcommand{\leftmark}{Lecture \thesection}
+  \noindent{\addcontentsline{toc}{section}{Lecture \thesection.}%
+  \sectionfont Lecture \thesection.}\medbreak}
+\makeatother
+
+\newcommand*{\xdash}[1][3em]{\rule[0.5ex]{#1}{0.55pt}}
+
+\title{Base de Dados}
+\author{Rodrigo Santos}
+\begin{document}
+\maketitle
+
+\lecture[Diagramas ER]
+\begin{itemize}
+  \item \textbf{Retângulos}: representam conjuntos de entidades.
+  \item \textbf{Losangos}: representam conjuntos de relações.
+  \item \textbf{Elipses}: representam atributos.\textbf{Vamos fazer as coisas por forma a ter sempre atributos simples, uni-valor e não derivados}.
+        \begin{itemize}
+          \item Atributo \textbf{simples}.
+          \item Atributo \textbf{composto}: Composto por vários atributos simples.
+          \item Atributo \textbf{uni-valor e multi-valor}: exemplo de um atributo multi-valor: número\textbf{s} de telefone.
+          \item Atributo \textbf{derivado}:  podem ser calculado a partir de outros atributos, como por exemplo a idade, a partir da data de nascimento.
+        \end{itemize}
+  \item \textbf{Linhas}: ligam atributos aos conjuntos de entidades e conjuntos de entidades a conjuntos de associações.
+\end{itemize}
+
+\textbf{Restrições de mapeamento (entre o conjunto de relações e o conjunto de entidades)}
+\begin{itemize}
+  \item \textbf{Seta} ($\rightarrow$): significa 1.
+  \item \textbf{Linha} (\xdash[1em]): significa muitos.
+\end{itemize}
+
+\textbf{Participação}
+\begin{itemize}
+  \item \textbf{Participação total (=)}: indicado por uma linha dupla, significa que toda a entidade do conjunto de entidades participa em pelo menos uma relação do conjunto de relações.
+  \item \textbf{Participação parcial}: algumas entidades podem não participar em qualquer relação do conjunto de relações.
+\end{itemize}
+
+\textbf{Conjunto de entidades fraco}
+\begin{itemize}
+  \item Um conjunto de entidades fraco é representado por um retângulo duplo.
+  \item O atributo discriminante do conjunto de entidades fraco é sublinhado a tracejado.
+  \item As relações são representadas por um retângulo duplo. (A relação entre o conjunto fraco e o dominante.)
+\end{itemize}
+
+\textbf{Especialização/Generalização (ISA)}
+\begin{itemize}
+  \item \textbf{Herança de atributos}: um conjunto de entidades de menor nível herda todos os atributos e participa em todas as relações do conjunto de entidades de maior nível. Por outras palavras herdam todos os atributos dos que estão acima deles, e por isso não necessitamos de voltar a repetir os atributos.
+  \item \textbf{Disjunta}: só pode pertencer a um elemento do nível inferior. Representa-se com um \textbf{disjoint} ao lado do triângulo do ISA.
+  \item \textbf{Sobreposição}: pode pertencer a vários elementos do nível inferior.
+  \item \textbf{Total}: tem de pertencer a pelo menos um elemento do nível inferior. Representa-se com um linha dupla (Como a Participação total.)
+  \item \textbf{Parcial}: pode não pertencer a nenhum.
+\end{itemize}
+
+\textbf{Chaves}
+\begin{itemize}
+  \item \textbf{Super-chave de um conjunto de entidades}: é um conjunto de um ou mais atributos cujos valores determinam univocamente cada uma das entidades dentro do conjunto. Uma super-chave pode ter informação desnecessária.
+  \item \textbf{Chave candidata}: Uma chave candidata de um conjunto de entidades é uma super-chave minimal.
+  \item \textbf{Chave primaria}: Chave primária é uma chave candidata designada para identificar as entidades dum conjunto.
+  \item A combinação das chaves primárias dos conjuntos de entidades participantes formam uma super-chave do conjunto de relações. \textbf{isto significa que um par de entidades pode aparecer no máximo uma vez num conjunto de relações}.
+  \item Temos que considerar a cardinalidade de mapeamento (Restrições de mapeamento mais acima) dos conjuntos de entidades quando decidimos quais as chaves candidatas dos conjuntos de relações.
+\end{itemize}
+
+\lecture[Modelo Relacional]
+Os diagramas ER ajudam na modelação dos dados mas não ajudam como modelo para armazenar dados e no seu posterior tratamento.
+
+
+\end{document}
