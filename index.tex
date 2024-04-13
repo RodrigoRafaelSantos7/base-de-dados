@@ -1,0 +1,825 @@
+\documentclass{article}
+\usepackage[
+  left=1.2in,
+  right=1.2in,
+  top=0.4in,
+  bottom=0.7in,
+  paperheight=11in,
+  paperwidth=8.5in
+]{geometry}
+
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{layout}
+\usepackage{caption}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Sql,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\makeatletter
+\newcommand*{\xdash}[1][3em]{\rule[0.5ex]{#1}{0.55pt}}
+\makeatother
+
+\title{Base de dados \large \\ Resumos}
+\author{Rodrigo Santos\\
+  \small Universidade NOVA de Lisboa\\\\
+}
+
+\date{\vspace{-5ex}}
+
+\begin{document}
+\maketitle
+
+\section{Diagramas entidade e relação (DER)}
+\textbf{Retângulos}: representam conjuntos de entidades. \\
+\textbf{Losangos}: representam conjuntos de relações. \\
+\textbf{Elipses}: representam atributos. \textbf{Vamos fazer as coisas por forma a ter sempre atributos simples, uni-valor e não derivados}:
+\begin{itemize}
+  \item Atributo \textbf{simples}.
+  \item Atributo \textbf{composto}: Composto por vários atributos simples.
+  \item Atributo \textbf{uni-valor e multi-valor}: exemplo de um atributo multi-valor: número\textbf{s} de telefone.
+  \item Atributo \textbf{derivado}:  podem ser calculado a partir de outros atributos, como por exemplo a idade, a partir da data de nascimento.
+\end{itemize}
+\textbf{Linhas}: ligam atributos aos conjuntos de entidades e conjuntos de entidades a conjuntos de associações. \\
+\textbf{Seta} ($\rightarrow$): significa 1. \\
+\textbf{Linha} (\xdash[1em]): significa muitos. \\
+\textbf{Participação total (=)}: indicado por uma linha dupla, significa que toda a entidade do conjunto de entidades participa em pelo menos uma relação do conjunto de relações. \\
+\textbf{Participação parcial}: algumas entidades podem não participar em qualquer relação do conjunto de relações. \\
+\textbf{Conjunto de entidades fraco}: Um conjunto de entidades fraco é representado por um retângulo duplo. O atributo discriminante do conjunto de entidades fraco é sublinhado a tracejado. As relações são representadas por um retângulo duplo (a relação entre o conjunto fraco e o dominante).
+
+\subsection*{Especialização/Generalização (ISA):}
+
+\begin{itemize}
+  \item \textbf{Herança de atributos}: um conjunto de entidades de menor nível herda todos os atributos e participa em todas as relações do conjunto de entidades de maior nível. Por outras palavras herdam todos os atributos dos que estão acima deles, e por isso não necessitamos de voltar a repetir os atributos.
+  \item \textbf{Disjunta}: só pode pertencer a um elemento do nível inferior. Representa-se com um \textbf{disjoint} ao lado do triângulo do ISA.
+  \item \textbf{Sobreposição}: pode pertencer a vários elementos do nível inferior.
+  \item \textbf{Total}: tem de pertencer a pelo menos um elemento do nível inferior. Representa-se com um linha dupla (Como a Participação total.)
+  \item \textbf{Parcial}: pode não pertencer a nenhum.
+\end{itemize}
+
+\subsection*{Chaves:}
+\begin{itemize}
+  \item \textbf{Super-chave de um conjunto de entidades}: é um conjunto de um ou mais atributos cujos valores determinam univocamente cada uma das entidades dentro do conjunto. Uma super-chave pode ter informação desnecessária.
+  \item \textbf{Chave candidata}: Uma chave candidata de um conjunto de entidades é uma super-chave minimal.
+  \item \textbf{Chave primaria}: Chave primária é uma chave candidata designada para identificar as entidades dum conjunto.
+  \item A combinação das chaves primárias dos conjuntos de entidades participantes formam uma super-chave do conjunto de relações. \textbf{isto significa que um par de entidades pode aparecer no máximo uma vez num conjunto de relações}.
+  \item Temos que considerar a cardinalidade de mapeamento (Restrições de mapeamento mais acima) dos conjuntos de entidades quando decidimos quais as chaves candidatas dos conjuntos de relações.
+\end{itemize}
+
+\section{Modelo relacional}
+\subsection{Derivação a partir de um DER}
+Uma base de dados que seja representável por um DER pode ser também representada por intermédio de várias relações (tabelas). Para cada conjunto de entidades (retângulo) e para cada conjunto de relações do modelo ER (losango) gera-se uma única relação (tabela) com o nome do conjunto de entidades ou conjunto de relações respetivo.
+
+\subsubsection*{Derivação de conjuntos de entidades como tabelas}
+Um \textbf{conjunto de entidades forte} reduz-se a uma relação (tabela) com exatamente os mesmos atributos. Um \textbf{conjunto de entidades fraco} é representado por uma relação (tabela) que tem como atributos a chave primária dos conjuntos de entidades dominantes (ou identificadores) e os restantes atributos do conjunto de entidades fraco.
+
+\subsubsection*{Derivação de conjuntos de relações como tabelas}
+Um \textbf{conjunto de relações} é representado por uma relação (tabela) com atributos para as chaves primárias dos conjuntos de entidades participantes e com atributos adicionais para os atributos próprios (ou descritivos) do conjunto de relações.
+
+\subsubsection*{Derivação de tabelas para a especialização (ISA)}
+Formar uma relação (tabela) para a entidade de maior nível (mais geral). Criar uma relação (tabela) para cada conjunto de entidades de nível abaixo, incluindo a chave primária da entidade acima e os atributos locais.
+
+\subsubsection*{Derivação da Agregação}
+Tratar o conjunto de relações agregado como se se tratasse de um conjunto de entidades, sendo a sua chave a chave do conjunto de relações (as chaves primarias dos envolvidos).
+
+\subsection{Determinação de chaves a partir do DER}
+\begin{itemize}
+  \item \textbf{Conjunto de entidades forte}: A chave primária do conjunto de entidades é a chave primária da relação (tabela).
+  \item \textbf{Conjunto de entidades fraco}: A chave primária da relação (tabela) consiste na união da(s) chave(s) primária(s) do(s) conjunto(s) de entidades dominante(s) com o discriminante do conjunto de entidades fracas.
+  \item \textbf{Conjunto de relações}: A união das chave primárias dos conjuntos de entidades relacionados é uma super-chave da relação (tabela).
+        \begin{itemize}
+          \item Para conjuntos de relações binários um-para-muitos, a chave primária do lado “muitos” é a chave primária da relação (tabela).
+          \item Para conjuntos de relações um-para-um, a chave primária de qualquer um dos conjuntos de entidades é chave candidata da relação (tabela).
+          \item Para conjuntos de relações muitos-para-muitos, a união das chaves primárias é a chave primária da relação (tabela).
+        \end{itemize}
+\end{itemize}
+
+\subsection{Tabelas redundantes}
+Conjuntos de relações \textbf{muitos-para-um} e \textbf{um-para-muitos}, totais no lado muitos podem ser representados adicionando atributos extra ao lado \textit{muitos} contendo a chave primária do outro conjunto participante. \\
+Se a participação é parcial (\xdash[1em]) no lado muitos, a substituição da relação (tabela) por atributos extra pode levar à ocorrência de valores nulos.\\
+Para conjuntos de relações \textbf{um-para-um}, qualquer dos lados com participação total \textbf{(=)} pode receber a chave primária do outro lado.\\
+São redundantes as relações (tabelas) correspondentes aos conjuntos de relações entre o conjunto de entidades fracas e os seus conjuntos de entidades dominantes.
+
+\subsection{Chaves Estrangeiras}
+Um esquema de relação pode ter um (ou mais) atributo(s) que corresponda(m) à chave primária de outra relação. Esses atributos são designados por chaves estrangeira. As chaves estrangeiras impõem restrições sobre os dados (integridade referencial). Apenas os valores que ocorrem na relação referenciada podem ocorrer nos atributos da chave estrangeira da relação referenciadora.
+
+\section{Álgebra Relacional}
+
+\subsection{Operação de seleção}
+\[
+  \sigma_p(r) = \{t \ | \ t \in r \wedge p(t)\}
+\]
+Onde $p$ é o predicado de seleção, que é uma formula proposicional com termos ligados por: $\wedge, \vee, \neg$. Cada termo é do tipo $<Atributo> \ op \ <Atributo>$ onde $op$ pode ser $=, \neq, >, \geq ,< ,e \leq  \ $.
+\textbf{Propriedades de seleção}:
+\begin{itemize}
+  \item \textit{Comutatividade} --- $\sigma_1(\sigma_2(r)) = \sigma_2(\sigma_1(r)) = \sigma_{1 \wedge 2}(r)$.
+\end{itemize}
+
+\begin{table}[ht]
+  \parbox{.45\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+      \hline
+      A        & B        & C  & D  \\ \hline
+      $\alpha$ & $\alpha$ & 1  & 7  \\ \hline
+      $\alpha$ & $\beta$  & 5  & 7  \\ \hline
+      $\beta$  & $\beta$  & 12 & 3  \\ \hline
+      $\beta$  & $\beta$  & 23 & 10 \\ \hline
+    \end{tabular}
+    \caption{Relação r}
+  }
+  \hfill
+  \parbox{.45\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+      \hline
+      A        & B        & C  & D  \\ \hline
+      $\alpha$ & $\alpha$ & 1  & 7  \\ \hline
+      $\beta$  & $\beta$  & 23 & 10 \\ \hline
+    \end{tabular}
+    \caption{$\sigma_{A=B \ \wedge \ D>5}(r)$}
+  }
+\end{table}
+
+\subsection{Operação de projeção}
+
+\[
+  \Pi_{A_1,A_2,\dots ,A_k}(r)
+\]
+Onde $A_1,A_2,\dots ,A_k$ são nomes de atributos e $r$ é uam relação. O resultado é a relação com os $k$ atributos ($k$ colunas) obtidos eliminando os atributos (colunas) que não estão listadas. \textbf{O resultado não tem tuplos duplicados, pois as relações são conjuntos}. Os atributos $A$ na relação $r$ são chave estrangeira referenciando os atributos $B$ na relação se e só se: $\Pi_A(r) \subseteq \Pi_B(s)$.
+\pagebreak
+
+\textbf{Propriedades da projeção}:
+\begin{itemize}
+  \item \textit{Comutatividade} --- $\Pi_{C_n}(\sigma_p(r)) = \sigma_p(\Pi_{C_n}(r))$.
+\end{itemize}
+
+\begin{table}[ht]
+  \parbox{.45\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|l|}
+      \hline
+      A        & B  & C \\ \hline
+      $\alpha$ & 10 & 1 \\ \hline
+      $\alpha$ & 20 & 1 \\ \hline
+      $\beta$  & 30 & 1 \\ \hline
+      $\beta$  & 40 & 2 \\ \hline
+    \end{tabular}
+    \caption{Relação r}
+  }
+  \hfill
+  \parbox{.45\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A        & C \\ \hline
+      $\alpha$ & 1 \\ \hline
+      $\beta$  & 1 \\ \hline
+      $\beta$  & 2 \\ \hline
+    \end{tabular}
+    \caption{$\Pi_{A,C}(r)$}
+  }
+\end{table}
+
+\subsection{Operação de união}
+\[
+  r \cup s = \{t \ | \ t \in r \vee t \in s\}
+\]
+Para $r \cup s$ ser válida, $r$ e $s$ devem ter o mesmo número de atributos e os domínios dos atributos devem ser compatíveis (ou seja os valores da 2a coluna de $r$ são do mesmo tipo dos valores da 2a coluna de $s$). \\
+\textbf{Propriedade da União}:
+\begin{itemize}
+  \item \textit{Comutatividade}: $r\cup s = s \cup r$.
+  \item \textit{Associatividade}: $r \cup (s \cup t) = (r \cup s) \cup t$
+  \item \textit{Distributividade sobre seleção}: $\sigma_p(r \cup s)= \sigma_p(r) \cup \sigma_p(s)$.
+  \item \textit{Distributividade sobre projeção}: $\Pi_L{r \cup s} = \Pi_L(r) \cup \Pi_L(s)$.
+\end{itemize}
+
+\begin{table}[ht]
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A        & B \\ \hline
+      $\alpha$ & 1 \\ \hline
+      $\alpha$ & 2 \\ \hline
+      $\beta$  & 1 \\ \hline
+    \end{tabular}
+    \caption{Relação r}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A        & B \\ \hline
+      $\alpha$ & 2 \\ \hline
+      $\beta$  & 3 \\ \hline
+    \end{tabular}
+    \caption{Relação s}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A        & B \\ \hline
+      $\alpha$ & 1 \\ \hline
+      $\alpha$ & 2 \\ \hline
+      $\beta$  & 1 \\ \hline
+      $\beta$  & 3 \\ \hline
+    \end{tabular}
+    \caption{$r \cup s$}
+  }
+\end{table}
+
+\subsection{Operação de diferença de conjuntos}
+\[
+  r - s=\{t \ | \ t \in r \wedge t \notin s\}
+\]
+As diferenças de conjuntos só podem ser efetuadas entre relações compatíveis. Para tal $r$ e $s$ devem ter o mesmo número de elementos e os domínios dos atributos de $r$ e $s$ devem ser compatíveis.
+\textbf{Propriedade da diferença}:
+\begin{itemize}
+  \item \textit{Distributividade sobre seleção}: $\sigma_p(r - s) = \sigma_p(r) - \sigma_p(s)$.
+\end{itemize}
+
+\begin{table}[ht]
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A        & B \\ \hline
+      $\alpha$ & 1 \\ \hline
+      $\alpha$ & 2 \\ \hline
+      $\beta$  & 1 \\ \hline
+    \end{tabular}
+    \caption{Relação r}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A        & B \\ \hline
+      $\alpha$ & 2 \\ \hline
+      $\beta$  & 3 \\ \hline
+    \end{tabular}
+    \caption{Relação s}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A        & B \\ \hline
+      $\alpha$ & 1 \\ \hline
+      $\beta$  & 1 \\ \hline
+    \end{tabular}
+    \caption{$r - s$}
+  }
+\end{table}
+
+\pagebreak
+
+\subsection{Operação de produto cartesiano}
+\[
+  r \times s = \{tq \ | \ t \in r \wedge q \in s\}
+\]
+Assume que os atributos de $r(R)$ e $s(S)$ são disjuntos. (Ou seja, $R \cap S = \varnothing$). \textbf{Se os atributos de $r(R)$ e $s(S)$ não são disjuntos, então têm que se utilizar renomeações}. Se o nome das relações for diferente, distinguem-se os atributos com o mesmo nome prefixando-os com o nome da relação.\\
+\textbf{Propriedades do Produto Cartesiano}:
+\begin{itemize}
+  \item \textbf{Associatividade}: $r \times (s \times t) = (r \times s) \times t$.
+  \item \textbf{Não é Comutativo}.
+\end{itemize}
+
+\begin{table}[ht]
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A        & B \\ \hline
+      $\alpha$ & 1 \\ \hline
+      $\beta$  & 2 \\ \hline
+    \end{tabular}
+    \caption{Relação r}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|l|}
+      \hline
+      C        & D  & E \\ \hline
+      $\alpha$ & 10 & a \\ \hline
+      $\alpha$ & 13 & a \\ \hline
+      $\beta$  & 20 & b \\ \hline
+      $\gamma$ & 10 & b \\ \hline
+    \end{tabular}
+    \caption{Relação s}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|l|l|l|}
+      \hline
+      A        & B & C        & D  & E \\ \hline
+      $\alpha$ & 1 & $\alpha$ & 10 & a \\ \hline
+      $\alpha$ & 1 & $\alpha$ & 13 & a \\ \hline
+      $\alpha$ & 1 & $\beta$  & 20 & b \\ \hline
+      $\alpha$ & 1 & $\gamma$ & 10 & b \\ \hline
+      $\beta$  & 2 & $\alpha$ & 10 & a \\ \hline
+      $\beta$  & 2 & $\alpha$ & 13 & a \\ \hline
+      $\beta$  & 2 & $\beta$  & 20 & b \\ \hline
+      $\beta$  & 2 & $\gamma$ & 10 & b \\ \hline
+    \end{tabular}
+    \caption{$r \times s$}
+  }
+\end{table}
+
+\subsection{Operação de renomeação}
+\[
+  \rho_X(E)
+\]
+Devolve a expressão $E$ com o nome $x$. Permite dar um nome aos resultados de expressões de álgebra relacional e que uma relação seja referida por mais de um nome. Se uma expressão de álgebra relacional $E$ tem número de elementos $n$, então $\rho_{X(A_1,A_2, \dots, A_n)}(E)$ devolve a expressão $E$ com o nome $X$, e com os atributos renomeados para $(A_1,A_2, \dots, A_n)$ respetivamente.
+
+\subsection{Operação de interseção de conjuntos}
+\[
+  r \cap s = \{t \ | \ t \in r \wedge t \in s\}
+\]
+Obriga a que $r$ e $s$ tenham o mesmo número de elementos (atributos) e a que os atributos de $r$ e $s$ sejam compatíveis (do mesmo tipo).
+
+\begin{table}[ht]
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A        & B \\ \hline
+      $\alpha$ & 1 \\ \hline
+      $\alpha$ & 2 \\ \hline
+      $\beta$  & 1 \\ \hline
+    \end{tabular}
+    \caption{Relação r}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A        & B \\ \hline
+      $\alpha$ & 2 \\ \hline
+      $\beta$  & 3 \\ \hline
+    \end{tabular}
+    \caption{Relação s}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A        & B \\ \hline
+      $\alpha$ & 2 \\ \hline
+    \end{tabular}
+    \caption{$r \cap s$}
+  }
+\end{table}
+
+\subsection{Operação de junção natural}
+\[
+  r \Join s
+\]
+Sejam r e s relações nos esquemas $R$ e $S$, respetivamente. O resultado é uma relação no esquema $R \cup S$ que é obtido considerando cada par de tuplos $t_r$ de $r$ e $t_s$ de $s$. Se $t_r$ e $t_s$ têm o mesmo valor em cada um dos atributos de $R \cap S$, então um tuplo $t$ é adicionado ao resultado, em que $t$ tem o mesmo valor que $t_r$ em $r$ e $t$ tem o mesmo valor que $t_s$ em $s$.
+\pagebreak
+
+\[
+  R = (A,B,C,D) \quad S = (E,B,D) \quad r \Join s=(A,B,C,D,E)
+\]
+\[
+  r \Join s = \Pi_{r.B,r.D,r.A,r.C,s.E}(\sigma_{r.B = s.B \ \wedge \ r.D = s.D}(r \times s))
+\]
+
+\begin{table}[ht]
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+      \hline
+      A        & B & C         & D \\ \hline
+      $\alpha$ & 1 & $\alpha$  & a \\ \hline
+      $\beta$  & 2 & $\gamma $ & a \\ \hline
+      $\gamma$ & 4 & $\beta$   & b \\ \hline
+      $\alpha$ & 1 & $\gamma$  & a \\ \hline
+      $\delta$ & 2 & $\beta$   & b \\ \hline
+    \end{tabular}
+    \caption{Relação r}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|l|}
+      \hline
+      B & D & E          \\ \hline
+      1 & a & $\alpha$   \\ \hline
+      3 & a & $\beta$    \\ \hline
+      1 & a & $\gamma$   \\ \hline
+      2 & b & $\delta$   \\ \hline
+      3 & b & $\epsilon$ \\ \hline
+    \end{tabular}
+    \caption{Relação s}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|l|l|l|}
+      \hline
+      B & D & A        & C        & E        \\ \hline
+      1 & a & $\alpha$ & $\alpha$ & $\alpha$ \\ \hline
+      1 & a & $\alpha$ & $\alpha$ & $\gamma$ \\ \hline
+      1 & a & $\alpha$ & $\gamma$ & $\alpha$ \\ \hline
+      1 & a & $\alpha$ & $\gamma$ & $\gamma$ \\ \hline
+      2 & b & $\delta$ & $\beta$  & $\delta$ \\ \hline
+    \end{tabular}
+    \caption{$r \Join s$}
+  }
+\end{table}
+
+\subsection{Operação de divisão}
+\[
+  r \div s = \{t \ | \ t \in \Pi_{R-S}(r) \ \wedge \ \forall_u \in s: tu \in r\ \}
+\]
+Onde $tu$ é o tuplo resultante da concatenação dos tuplos $t$ e $u$. Adequada para consultas que incluam a frase \textbf{“para todo”}. Sejam $r$ e $s$ relações nos esquemas $R$ e $S$ respetivamente, com $R=(A_1,\dots ,A_m,B_1,\dots ,B_n)$ e $S=(B_1,\dots ,B_n)$, Portanto $R - S = (A1, ..., Am)$. Seja $q = r \div s$, então $q$ é a maior relação satisfazendo $q \times s \subseteq r$.
+Definição em termos de operações básicas da álgebra relacional. Sejam $r(R)$ e $s(S)$ relações, com $S \subseteq R$:
+\[
+  r \div s =\Pi_{R-S}(r) -\Pi_{R-S}((\Pi_{R-S}(r) \times s) - r)
+\]
+\begin{table}[ht]
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      A          & B \\ \hline
+      $\alpha$   & 1 \\ \hline
+      $\alpha$   & 2 \\ \hline
+      $\alpha$   & 3 \\ \hline
+      $\beta$    & 1 \\ \hline
+      $\gamma$   & 1 \\ \hline
+      $\delta$   & 1 \\ \hline
+      $\delta$   & 3 \\ \hline
+      $\delta$   & 4 \\ \hline
+      $\epsilon$ & 6 \\ \hline
+      $\epsilon$ & 1 \\ \hline
+      $\beta$    & 2 \\ \hline
+    \end{tabular}
+    \caption{Relação r}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|}
+      \hline
+      B \\ \hline
+      1 \\ \hline
+      2 \\ \hline
+    \end{tabular}
+    \caption{Relação s}
+  }
+  \hfill
+  \parbox{.30\linewidth}{
+    \centering
+    \begin{tabular}{|l|}
+      \hline
+      A        \\\hline
+      $\alpha$ \\ \hline
+      $\beta$  \\ \hline
+    \end{tabular}
+    \caption{$r \div s$}
+  }
+\end{table}
+
+\subsection{Operação de Atribuição}
+A operação de atribuição ($\leftarrow$) permite-nos renomear consultas complexas. Escreve-se a consulta como um programa sequencial constituído por uma sequência de atribuições terminada com uma expressão cujo valor é o resultado da consulta. \textbf{A atribuição é sempre efetuada para uma variável de relação temporária}. O resultado à direita de $\leftarrow$ é atribuído à variável que se encontra à esquerda de $\leftarrow$. Ou seja podemos escrever $r \div s$ como:
+
+\[
+  temp_1 \leftarrow \Pi_{R-S}(r) \quad
+  temp_2 \leftarrow \Pi_{R-S}((temp_1 \times s) - r) \quad
+  resultado \leftarrow temp_1 - temp_2
+\]
+
+\subsection{Projeção Generalizada}
+\[
+  \Pi_{F_1,F_2,\dots ,F_n}(E)
+\]
+$E$ é um expressão arbitrária. Cada uma das expressões ($F_1,F_2,\dots ,F_n$) é uma expressão aritmética envolvendo constantes e atributos no esquema de $E$. Exemplo: Dada a relação creditInfo\textit{(customerName, limit, creditBalance)}, encontrar quanto cada cliente pode ainda gastar:
+$\Pi_{customerName, limit - creditBalance}(\textrm{creditInfo}) $.
+
+\subsection{Funções de Agregação}
+\subsubsection*{Funções de Agregação}
+Aplicam-se a uma coleção de valores e devolvem um único valor como resultado.
+\begin{itemize}
+  \item \textbf{avg}: média dos valores.
+  \item \textbf{min}: minimo dos valores.
+  \item  \textbf{max}: máximo dos valores.
+  \item  \textbf{sum}: soma dos valores.
+  \item  \textbf{count}: número de valores distintos.
+\end{itemize}
+
+\subsubsection*{Operação de Agregação}
+\[
+  _{G_1,G_2, \dots , G_n}\mathcal{G}_{F_1(A_1), F_2(A_2), \dots ,F_n(A_n)}(E)
+\]
+$E$ é um expressão. ($G_1,G_2, \dots , G_n$) é uma lista de atributos de agrupamento (pode ser vazia). Cada $F_i$ é uma função de agregação e cada $A_i$ é um nome de um atributo. Agrupa a relação resultado de $E$ em conjuntos que tenham valores iguais nos atributos ($G_1,G_2, \dots , G_n$) (se $n = 0$, faz um grupo com todo o $E$). \textbf{Para cada grupo, devolve um tuplo}. Esse tuplo tem os valores dos atributos ($G_1,G_2, \dots , G_n$) do grupo, mais o resultado de aplicar as várias $F_i(Ai)$ ao conjunto de valores do grupo. O resultado da agregação não tem um nome. Pode-se recorrer à operação de renomeação para lhe dar um nome. Exemplo: $_{branchName}\mathcal{G}_{sum(balance) \ \textrm{\textbf{as}} \ sumBalance}(account)$.
+
+
+\begin{table}[ht]
+  \parbox{.45\linewidth}{
+    \centering
+    \begin{tabular}{|l|l|l|}
+      \hline
+      A        & B        & C  \\ \hline
+      $\alpha$ & $\alpha$ & 7  \\ \hline
+      $\alpha$ & $\beta$  & 7  \\ \hline
+      $\beta$  & $\beta$  & 3  \\ \hline
+      $\beta$  & $\beta$  & 10 \\ \hline
+    \end{tabular}
+    \caption{Relação r}
+  }
+  \hfill
+  \parbox{.45\linewidth}{
+    \centering
+    \begin{tabular}{|l|}
+      \hline
+      sum(C) \\ \hline
+      27     \\ \hline
+    \end{tabular}
+    \caption{$\mathcal{G}_{sum(C)}(r)$}
+  }
+\end{table}
+
+\subsection{Junção Externa}
+Uma extensão da operação de junção que evita a perda de informação. Calcula a junção e depois adiciona ao resultado os tuplos de uma relação que não estão relacionados com a outra relação na junção. Utiliza valores nulos. Todas as comparações com null são falsas por definição.
+
+\textbf{Falta a remoção inserção e atualização.}
+
+\section{Structured Query Language - SQL}
+Um comando SQL genérico
+\begin{lstlisting}
+  select F_agr1, ... F_agrn
+  from R_1, ..., R_m
+  where Cond_W
+  group by A_1, ..., A_g
+  having Cond_H
+\end{lstlisting}
+
+
+\subsection{Select}
+A cláusula select corresponde à operação de projeção da álgebra relacional. É utilizada para listar os atributos pretendidos no resultado da consulta. Na sintaxe de álgebra relacional a consulta seria: $\Pi_{atributo}(tabela)$. Um asterisco na cláusula select denota “todos os atributos” (elimina a projeção).
+\begin{lstlisting}
+  select atributo
+  from tabela
+\end{lstlisting}
+O SQL permite duplicados nas relações e nos resultados de consultas. Para forçar a eliminação de duplicados no resultado, inserir a palavra-chave distinct após select.
+\begin{lstlisting}
+  select distinct atributo
+  from tabela
+\end{lstlisting}
+A palavra-chave all indica que os duplicados não devem ser removidos (por omissão, o all é assumido pelo sistema, mesmo que não o coloque lá).
+
+A cláusula select pode conter expressões aritméticas envolvendo as operações, $+, -, *, e /$, com argumentos constantes ou atributos de tuplos (como na projeção generalizada).
+\begin{lstlisting}
+  select atributo_1, atributo_2 * 100
+  from tabela
+\end{lstlisting}
+Devolve um relação anterior, exceto que o $atributo_2$ é multiplicado por 100.
+
+\subsection{Where}
+A cláusula where corresponde ao predicado de seleção da álgebra relacional. É formada por um predicado envolvendo atributos de relações que aparecem na cláusula from.
+\begin{lstlisting}
+  select atributo 
+  from tabela
+  where atributo > ...
+\end{lstlisting}
+Os resultados de comparações podem ser combinados por intermédio dos conectivos lógicos $and, or$, e $not$. Podem-se aplicar comparações ao resultado de expressões aritméticas. Operador de comparação between para especificar condições em que um valor deve estar contido num intervalo de valores (incluindo os seus extremos). Para negar a condição pode-se colocar o conetivo not antes de between.
+\begin{lstlisting}
+  select atributo 
+  from tabela
+  where val1 between val2 and val3
+\end{lstlisting}
+Também existe o operador in para testar se um valor pertence a uma lista.
+\begin{lstlisting}
+  select atributo 
+  from tabela
+  where val1 in ('val2', 'val3', 'val4')
+\end{lstlisting}
+
+\subsection{Cadeias de Caracteres}
+O SQL inclui um mecanismo de concordância de padrões para comparações envolvendo cadeias de caracteres. Os padrões são descritos recorrendo a dois caracteres especiais:
+\begin{itemize}
+  \item percentagem(\%) - O carácter \% concorda com qualquer subcadeia.
+  \item sublinhado (\_) - O carácter \_ concorda com qualquer carácter.
+\end{itemize}
+\begin{lstlisting}
+  select atributo 
+  from tabela
+  where val1 like '%...%'
+\end{lstlisting}
+A SQL suporta uma variedade de operações com cadeias de caracteres, tais como:
+\begin{itemize}
+  \item concatenação (utilizando $||$)
+  \item conversão para maiúsculas (upper) e para minúsculas (lower)
+  \item calcular o comprimento, extração de subcadeias, etc.
+\end{itemize}
+
+\subsection{From}
+A cláusula from corresponde à operação de produto cartesiano da álgebra relacional. Indica as relações a consultar na avaliação da expressão.
+\begin{lstlisting}
+  select *
+  from tabela1 , tabela2 --> produto cartesiano entre tabela1 e tabela2.
+\end{lstlisting}
+
+\subsection{Renomeação}
+A linguagem SQL permite a renomeação de relações e atributos recorrendo à cláusula \textbf{as}:
+\begin{lstlisting}
+  old_name as new_name
+\end{lstlisting}
+Caso se pretenda utilizar um nome com espaços, esse nome deverá ser colocado entre aspas.
+
+\subsection{Variáveis de tuplo}
+As variáveis de tuplo são definidas na cláusula from por intermédio da cláusula opcional \textbf{as}:
+\begin{lstlisting}
+  select atributo 
+  from tabela1 as T, tabela2 as S
+\end{lstlisting}
+As variáveis de tuplos podem ser vistas como criando várias cópias de uma mesma relação.
+\begin{lstlisting}
+  --> voos(numVoo,Matr,Data,Hora,De,Para) Quais os pares de voos que usaram o mesmo aviao no mesmo dia?
+  select T.numVoo, S.numVoo
+  from voos as T, voos as S
+  where T.Matr = S.Matr 
+    and T.Data = S.Data
+    and T.numVoo < S.numVoo
+\end{lstlisting}
+
+\subsection{Select Case}
+O \textbf{case} pode ocorrer em qualquer lugar onde se pode ter uma expressão por exemplo na cláusula select, where ou mesmo dentro de funções de agregação.
+\begin{lstlisting}
+  select numero,
+  case when sexo='M' then 'Senhor' || nome
+       when sexo='F' then 'Senhora' || nome
+    end as titNome
+  from alunos
+\end{lstlisting}
+Pode-se ter um ramo else final:
+\begin{lstlisting}
+  select alu_numero as aluno, cad_codigo as cadeira,
+  case when nota='X' then 'Excluido'
+       when nota='A' then 'Ausente '
+       when nota='F' then 'Faltou'
+       when nota is null then 'Nota por lancar'
+       else nota
+  end
+from inscricoes
+\end{lstlisting}
+
+\subsection{Ordenação de tuplos}
+\begin{lstlisting}
+  select numero, name
+  from alunos
+  order by name
+\end{lstlisting}
+Pode-se especificar desc para ordenação descente ou asc para ordenação ascendente, para cada atributo; por omissão, assume-se ordem ascendente.
+\begin{lstlisting}
+  select numero, name
+  from alunos
+  order by name desc
+\end{lstlisting}
+Pode-se especificar \textit{nulls first} ou \textit{nulls last}, após o desc/asc, para indicar como ordenar os valores nulos. \textbf{Pode-se ter mais do que uma chave de ordenação, separando-as com vírgulas}.
+
+\subsection{Operações com Conjuntos}
+As operações com conjuntos union, intersect, e except (minus no Oracle) operam sobre relações e correspondem aos operadores de álgebra relacional $\cup, \cap$ e $-$ respetivamente. \textbf{Ao contrário das outras operações em SQL, as operações com conjuntos eliminam os duplicados automaticamente}. Para reter duplicados deve-se utilizar as respectivas versões multiconjunto union all, intersect all e except all.
+Supondo que um tuplo ocorre m vezes em r e n vezes em s, então ele ocorre:
+\begin{itemize}
+  \item $m+n$ vezes em r union all s.
+  \item $min(m,n)$ vezes em r intersect all s.
+  \item $max(0,m–n)$ vezes em r except all s.
+\end{itemize}
+\begin{lstlisting}
+  --> Listar todos os clientes que tem um emprestimo ou uma conta:
+  (select customer_name from depositor)
+  union
+  (select customer_name from borrower)
+  --> Listar todos os clientes que tem um emprestimo e uma conta:
+  (select customer_name from depositor)
+  intersect
+  (select customer_name from borrower)
+  --> Listar todos os clientes que tem uma conta mas nao tem emprestimos:
+  (select customer_name from depositor)
+  except
+  (select customer_name from borrower)
+\end{lstlisting}
+
+\subsection{Funções de Agregação}
+Estas funções aplicam-se a multi-conjuntos de valores de uma coluna de uma relação, devolvendo um valor:
+\begin{itemize}
+  \item \textbf{avg}: valor médio
+  \item \textbf{min}: valor mínimo
+  \item \textbf{max}: valor máximo
+  \item \textbf{sum}: soma dos valores
+  \item \textbf{count}: número de valores
+\end{itemize}
+\begin{lstlisting}
+  --> Determinar o saldo medio das contas
+  select avg (balance)
+  from account
+  where holder_name = bpi
+
+  --> Calcular o numero de clientes.
+  select count (*)
+  from customer
+
+  --> Encontrar o numero de depositantes do banco.
+  select count (distinct customer_name)
+  from depositor
+\end{lstlisting}
+
+\subsection{Group By}
+Atributos na cláusula \textbf{select} fora de funções de agregação têm de aparecer na lista \textbf{group by}. Se aparecer mais do que um atributo em group by, então cada grupo é formado pelos tuplo com a mesma combinação de valores em todos esses os atributos
+\begin{lstlisting}
+  --> Listar o numero de depositantes por agencia.
+  select branch_name, count (distinct customer_name)
+  from depositor, account
+  where depositor.account_number = account.account_number
+  group by branch_name
+\end{lstlisting}
+
+\subsection{Having}
+Predicados na cláusula \textbf{having} são aplicados depois da formação dos grupos, enquanto que os predicados na cláusula \textbf{where} são aplicados antes da formação dos grupos.
+\begin{lstlisting}
+  --> Listar os nomes de todas as agencias cujo valor medio dos saldos das contas superior a 1,200.
+
+  select branch_name, avg (balance)
+  from account
+  group by branch_name
+  having avg (balance) > 1200
+\end{lstlisting}
+
+\subsection{Operações de Junção}
+Estas operações adicionais são utilizadas habitualmente em sub-consultas na cláusula \textbf{from}.
+\begin{itemize}
+  \item \textbf{Condição de junção}: define quais os tuplos que são combinados nas duas relações, assim como quais os atributos que aparecem no resultado da junção.
+  \item \textbf{Tipo de junção}: define como tratar os tuplos que não estão relacionados entre si (baseados na condição de junção).
+        \begin{itemize}
+          \item \textbf{inner join}.
+          \item \textbf{left outer join}.
+          \item \textbf{right outer join}.
+          \item \textbf{full outer join}.
+        \end{itemize}
+\end{itemize}
+
+\begin{lstlisting}
+  --> Condicoes de juncao
+  natural
+  on <predicate>
+  using (A_1, A_2, ..., A_n)
+\end{lstlisting}
+
+\begin{itemize}
+  \item É obrigatória a utilização de uma condição de junção nas junções de tipo \textbf{outer}. É opcional no \textbf{inner join} (na ausência, comporta-se como o produto cartesiano).
+  \item A condição natural aparece antes do tipo de junção (por exemplo \textbf{natural inner join}). As restantes condições aparecem após o tipo de junção.
+  \item Nas junções com condição \textbf{natural}, primeiro aparecem os atributos comuns a ambas as relações, na ordem pela qual aparecem na relação do lado esquerdo. Depois, aparecem os restantes atributos da relação do lado esquerdo, seguidos dos restantes atributos da relação do lado direito.
+  \item Nas junções com condição \textbf{using} ($A_1, A_2,\dots , A_n$), primeiro aparecem os atributos $A_1, A_2,\dots , A_n$. Depois, aparecem os restantes atributos da relação do lado esquerdo, seguidos dos restantes atributos da relação do lado direito.
+\end{itemize}
+
+\
+
+\subsection{Using}
+\begin{lstlisting}
+  --> Listar todos os clientes que tem uma conta e nenhum emprestimo
+  select customer_name
+  from depositor left outer join borrower using(customer_name)
+  where loan_number is null  
+
+  --> Listar todos os clientes que tem uma conta ou um emprestimo no banco (mas nao ambos)
+  select customer_name
+  from depositor natural full outer join borrower
+  where account_number is null or loan_number is null
+\end{lstlisting}
+
+\end{document}

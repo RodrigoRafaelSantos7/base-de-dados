@@ -1,0 +1,74 @@
+\documentclass{article}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{layout}
+\usepackage{caption}
+\usepackage{graphicx}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Sql,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\begin{document}
+
+\section*{Teste 2021/2022}
+
+\subsection*{Questão 1}
+
+\includegraphics*[width=\textwidth]{der-21-22.png}
+
+\subsection*{Questão 2}
+\subsubsection*{(a)}
+A($\underline{a_2}$, $a_1$, n, $b_1$), $\underline{a_2}$ é chave primaria. $\underline{a_2}$ e $b_1$ chave estrangeira de D. n é chave estrangeira?\\
+B($\underline{b_1}$, $\underline{a_2}$, $b_2$), $\underline{b_1}$ e $\underline{a_2}$ são  chave primaria. $a_2$ é chave estrangeira de A. \\
+C($\underline{c_1}$, $c_2$, $c_3$), $\underline{c_1}$ é chave primaria. \\
+D($\underline{b_1}$, $\underline{a_2}$, $d_1$, $d_2$), $\underline{b_1}$ e $\underline{a_2}$ são chave estrangeira de B. \\
+E($\underline{b_1}$, $\underline{a_2}$), $\underline{b_1}$ e $\underline{a_2}$ são chave estrangeira de B. \\
+F($\underline{b_1}$, $\underline{a_2}$), $\underline{b_1}$ e $\underline{a_2}$ são chave estrangeira de B. \\
+$R_2$($\underline{b_1}$, $\underline{a_2}$, $\underline{c_1}$), $\underline{b_1}$, $\underline{a_2}$ e $\underline{c_1}$ são chave primaria. $\underline{b_1}$, $\underline{a_2}$ são chave estrangeira de B. $\underline{b_1}$, $\underline{a_2}$ são chave estrangeira de F. \\
+$R_5$($\underline{b_1}$, $\underline{a_2}$), $\underline{b_1}$ e $\underline{a_2}$ são chave primaria. $\underline{b_1}$, $\underline{a_2}$ são chave estrangeira de D. $\underline{b_1}$, $\underline{a_2}$ são chave estrangeira de E.
+
+\subsection*{Questão 3}
+\subsubsection*{(a)}
+$\Pi_{idc,matricula}(obra \Join maoObra \Join funcionarios) \div \Pi_{idc}(categorias)$
+\subsubsection*{(b)}
+$\Pi_{name} ((\Pi_{ido}(obra) - \Pi_{ido}(saidas)) \Join (maoObra \Join funcionarios))$
+\subsubsection*{(c)}
+$r_1 \leftarrow (obra \Join maoObra)$
+\[
+  \Pi_{r_1.matricula} (\sigma_{r1.matr = r2.matr \ \wedge \ r1.ido \neq r2.ido \ \wedge \ r_1.cc = r2.cc}(r_1 \times \rho_{r_2}(r_1)))
+\]
+\subsubsection*{(d)}
+\begin{lstlisting}
+select count(distintc CC)
+  from maoObra natural inner join saidas natural inner join obras
+where Matr = 01-01-AA;
+\end{lstlisting}
+\subsubsection*{(e)}
+\begin{lstlisting}
+select horas x precoHora as total
+  from (saidas natural inner join maoObra natural inner join funcionarios     natural inner join categorias)
+order by total desc;
+\end{lstlisting}
+\end{document}
